@@ -45,6 +45,39 @@ st.markdown("""
     }
     /* Radio butonlarını küçült */
     div[data-testid="stRadio"] > div { transform: scale(0.85); transform-origin: center; }
+    /* Link butonu (YAHOO KODLARI) stili */
+    div.stLinkButton > a {
+        background-color: #6495ED !important;
+        color: black !important;
+        font-weight: bold !important;
+        border: 1px solid #4a82db !important;
+    }
+    div.stLinkButton > a:hover {
+        background-color: #4a82db !important;
+        color: black !important;
+    }
+    /* Analiz Et ve diğer genel butonlar stili */
+    div.stButton > button {
+        background-color: #6495ED !important;
+        color: black !important;
+        font-weight: bold !important;
+        border: 1px solid #4a82db !important;
+    }
+    div.stButton > button:hover {
+        background-color: #4a82db !important;
+        color: black !important;
+    }
+    /* Excel İndir butonu stili */
+    div.stDownloadButton > button {
+        background-color: #217346 !important;
+        color: white !important;
+        font-weight: bold !important;
+        border: 1px solid #1e623c !important;
+    }
+    div.stDownloadButton > button:hover {
+        background-color: #1e623c !important;
+        color: white !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -108,9 +141,7 @@ def get_data(ticker, start_date, end_date):
 if 'lang' not in st.session_state:
     st.session_state.lang = "Türkçe"
 
-# ─── Sidebar Üst Kısım: Başlık ve Dil ───────────────────────────────
-st.sidebar.markdown('<p class="small-title" style="text-align:center;">📈 Financial Analysis Terminal</p>', unsafe_allow_html=True)
-
+# ─── Sidebar Üst Kısım: Dil ve Başlık ───────────────────────────────
 lang_col1, lang_col2 = st.sidebar.columns(2)
 with lang_col1:
     if st.button("TR", use_container_width=True, key="tr_btn_sidebar"):
@@ -120,6 +151,8 @@ with lang_col2:
     if st.button("EN", use_container_width=True, key="en_btn_sidebar"):
         st.session_state.lang = "English"
         st.rerun()
+
+st.sidebar.markdown('<p class="small-title" style="text-align:center;">📈 Financial Analysis Terminal</p>', unsafe_allow_html=True)
 
 st.sidebar.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
 
@@ -155,6 +188,7 @@ texts = {
         "var_95": "VaR (%95)",
         "kelly": "RSI (14)",
         "chart_type": "Grafik Tipi",
+        "yahoo_codes": "YAHOO KODLARI",
     },
     "English": {
         "params": "⚙ Parameters",
@@ -185,6 +219,7 @@ texts = {
         "var_95": "VaR (95%)",
         "kelly": "RSI (14)",
         "chart_type": "Chart Type",
+        "yahoo_codes": "YAHOO CODES",
     }
 }
 t = texts[lang]
@@ -197,7 +232,7 @@ st.sidebar.header(t["params"])
 ticker = st.sidebar.text_input(t["ticker"], value="AAPL")
 start_date = st.sidebar.date_input(t["start"], value=pd.to_datetime("2024-01-01"))
 end_date = st.sidebar.date_input(t["end"], value=pd.to_datetime("today"))
-run_analysis = st.sidebar.button(t["analyze"])
+run_analysis = st.sidebar.button(t["analyze"], use_container_width=True)
 
 # ─── Analiz ─────────────────────────────────────────────────────────
 
@@ -287,6 +322,11 @@ if "data" in st.session_state and not st.session_state.data.empty:
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         export_df.to_excel(writer, sheet_name=current_ticker, index=True)
+        # Excel dosyasının altına linki ekle
+        worksheet = writer.sheets[current_ticker]
+        last_row = len(export_df) + 2
+        worksheet.cell(row=last_row + 1, column=1, value="YAHOO KODLARI")
+        worksheet.cell(row=last_row + 1, column=2, value="https://finance.yahoo.com/lookup/")
     excel_bytes = output.getvalue()
 
     st.sidebar.markdown('<div style="margin-top: -10px;"></div>', unsafe_allow_html=True)
@@ -297,6 +337,8 @@ if "data" in st.session_state and not st.session_state.data.empty:
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         use_container_width=True
     )
+    st.sidebar.link_button(t["yahoo_codes"], "https://finance.yahoo.com/lookup/", use_container_width=True)
+
 
     # ── Açılış / Kapanış tek satırda ────────────────────────
     change_color = "green" if daily_change >= 0 else "red"

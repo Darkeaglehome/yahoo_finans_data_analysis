@@ -40,6 +40,9 @@ Run the application using Streamlit:
 streamlit run financial_dashboard.py
 ```
 
+> [!TIP]
+> **Note:** For Turkish stocks (Borsa Istanbul), you must add `.IS` suffix to the ticker (e.g., `THYAO.IS`, `EREGL.IS`).
+
 ---
 
 ## Türkçe
@@ -75,3 +78,6 @@ Uygulamayı Streamlit ile çalıştırın:
 ```bash
 streamlit run financial_dashboard.py
 ```
+
+> [!TIP]
+> **Not:** Türk borsa (BIST) hisse senetleri için sembolün sonuna `.IS` eklemek gerekmektedir (Örn: `THYAO.IS`, `EREGL.IS`).
