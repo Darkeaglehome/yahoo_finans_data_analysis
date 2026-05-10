@@ -2,6 +2,8 @@
 
 A high-performance, professional trading terminal interface built with Streamlit and Plotly for market analysis. Supports both English and Turkish.
 
+darkeaglehome-finans.darkeaglehome.workers.dev open live web
+
 [English](#english) | [Türkçe](#türkçe)
 
 ---
